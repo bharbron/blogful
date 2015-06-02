@@ -45,4 +45,10 @@ def add_post_post():
   session.add(post)
   session.commit()
   return redirect(url_for("posts"))
+
+@app.route("/post/<int:post_id>")
+def single_post(post_id=1):
+  post = session.query(Post).filter_by(id = post_id).first()
+  
+  return render_template("single_post.html", post=post)
   
