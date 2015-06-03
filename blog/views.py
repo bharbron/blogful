@@ -47,8 +47,12 @@ def add_post_post():
   return redirect(url_for("posts"))
 
 @app.route("/post/<int:post_id>")
-def single_post(post_id=1):
+def single_post(post_id):
   post = session.query(Post).filter_by(id = post_id).first()
-  
   return render_template("single_post.html", post=post)
+
+@app.route("post/<int:post_id>/edit", methods=["GET"])
+def edit_post(post_id):
+  post = session.query(Post).filter_by(id = post_id).first()
+  return render_template("edit_post.html", post=post)
   
