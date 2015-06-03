@@ -63,4 +63,16 @@ def edit_post_post(post_id):
   post.content = mistune.markdown(request.form["content"])
   session.commit()  
   return redirect(url_for("single_post", post_id=post_id))
-  
+
+@app.route("/post/<int:post_id>/delete", methods=["GET"])
+def delete_post_get(post_id):
+  post = session.query(Post).filter_by(id = post_id).first()
+  return render_template("delete_post.html", post=post)
+
+@app.route("/post/<int:post_id>/delete", methods=["POST"])
+def delete_post_post(post_id):
+  if request.form["submit"] == "delete":
+    post = session.query(Post).filter_by(id = post_id).first()
+    session.delete(post)
+    session.commit()
+  return redirect(url_for("posts"))
