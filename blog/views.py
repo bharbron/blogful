@@ -51,8 +51,16 @@ def single_post(post_id):
   post = session.query(Post).filter_by(id = post_id).first()
   return render_template("single_post.html", post=post)
 
-@app.route("post/<int:post_id>/edit", methods=["GET"])
-def edit_post(post_id):
+@app.route("/post/<int:post_id>/edit", methods=["GET"])
+def edit_post_get(post_id):
   post = session.query(Post).filter_by(id = post_id).first()
   return render_template("edit_post.html", post=post)
+
+@app.route("/post/<int:post_id>/edit", methods=["POST"])
+def edit_post_post(post_id):
+  post = session.query(Post).filter_by(id = post_id).first()
+  post.title = request.form["title"]
+  post.content = mistune.markdown(request.form["content"])
+  session.commit()  
+  return redirect(url_for("single_post", post_id=post_id))
   
