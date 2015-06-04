@@ -1,6 +1,6 @@
 import mistune
 from flask import render_template, request, redirect, url_for, flash
-from flask.ext.login import login_user
+from flask.ext.login import login_user, login_required
 from werkzeug.security import check_password_hash
 
 from blog import app
@@ -35,10 +35,12 @@ def posts(page=1, paginate_by=10):
                         )
 
 @app.route("/post/add", methods=["GET"])
+@login_required
 def add_post_get():
   return render_template("add_post.html")
 
 @app.route("/post/add", methods=["POST"])
+@login_required
 def add_post_post():
   post = Post(
     title=request.form["title"],
