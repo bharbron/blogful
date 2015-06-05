@@ -57,29 +57,48 @@ def single_post(post_id):
   return render_template("single_post.html", post=post)
 
 @app.route("/post/<int:post_id>/edit", methods=["GET"])
+@login_required
 def edit_post_get(post_id):
   post = session.query(Post).filter_by(id = post_id).first()
-  return render_template("edit_post.html", post=post)
+  if current_user.id == post.author_id or not post.author_id:
+    return render_template("edit_post.html", post=post)
+  else:
+    flash("You may only edit your own posts", "warning")
+    return redirect(url_for("posts"))
 
 @app.route("/post/<int:post_id>/edit", methods=["POST"])
+@login_required
 def edit_post_post(post_id):
   post = session.query(Post).filter_by(id = post_id).first()
-  post.title = request.form["title"]
-  post.content = mistune.markdown(request.form["content"])
-  session.commit()  
-  return redirect(url_for("single_post", post_id=post_id))
+  if current_user.id == post.author_id or not post.author_id:
+    post.title = request.form["title"]
+    post.content = mistune.markdown(request.form["content"])
+    session.commit()
+    return redirect(url_for("single_post", post_id=post_id))
+  else:
+    flash("You may only edit your own posts", "warning")
+    return redirect(url_for("posts"))
 
 @app.route("/post/<int:post_id>/delete", methods=["GET"])
+@login_required
 def delete_post_get(post_id):
   post = session.query(Post).filter_by(id = post_id).first()
-  return render_template("delete_post.html", post=post)
+  if current_user.id == post.author_id or not post.author_id:
+    return render_template("delete_post.html", post=post)
+  else:
+    flash("You may only delete your own posts", "warning")
+    return redirect(url_for("posts"))
 
 @app.route("/post/<int:post_id>/delete", methods=["POST"])
+@login_required
 def delete_post_post(post_id):
   if request.form["submit"] == "delete":
     post = session.query(Post).filter_by(id = post_id).first()
-    session.delete(post)
-    session.commit()
+    if current_user.id == post.author_id or not post.author_id:
+      session.delete(post)
+      session.commit()
+    else:
+      flash("You may only delete your own posts", "warning")
   return redirect(url_for("posts"))
 
 @app.route("/login", methods=["GET"])
