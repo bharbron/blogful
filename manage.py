@@ -1,15 +1,23 @@
 import os
 from flask.ext.script import Manager
+from flask.ext.migrate import Migrate, MigrateCommand
 
 from blog import app
 from blog.models import Post
-from blog.database import session
+from blog.database import session, Base
 
 from getpass import getpass
 from werkzeug.security import generate_password_hash
 from blog.models import User
 
+class DB(object):
+  def __init__(self, metadata):
+    self.metadata = metadata
+
 manager = Manager(app)
+
+migrate = Migrate(app, DB(Base.metadata))
+manager.add_command('db', MigrateCommand)
 
 @manager.command
 def run():
