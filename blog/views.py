@@ -1,6 +1,6 @@
 import mistune
 from flask import render_template, request, redirect, url_for, flash
-from flask.ext.login import login_user, login_required, current_user
+from flask.ext.login import login_user, logout_user, login_required, current_user
 from werkzeug.security import check_password_hash
 
 from blog import app
@@ -97,3 +97,8 @@ def login_post():
   
   login_user(user)
   return redirect(request.args.get('next') or url_for("posts"))
+
+@app.route("/logout")
+def logout():
+  logout_user()
+  return redirect(url_for("posts"))
