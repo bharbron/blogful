@@ -4,6 +4,7 @@
     <ul class="list-unstyled">
       <li>
         {{ post.datetime | dateformat("%d/%m/%y") }}
+        {{ post.author.name }}
       </li>
     </ul>
     <a href="{{ url_for('edit_post_get', post_id=post.id) }}">Edit</a>
