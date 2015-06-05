@@ -2,37 +2,18 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div class="row">
-  <div class="col-md-2 text-right metadata">
-    <ul class="list-unstyled">
-      <li>
-        {{ post.datetime | dateformat("%d/%m/%y") }}
-      </li>
-    </ul>
-  </div>
-  <div class="col-md-10">
-    <h1>
-      <a href="{{ url_for('single_post', post_id=post.id) }}">{{ post.title }}</a>
-    </h1>
-    {{ post.content | safe }}
+<div class="row">  
+  <div class="col-md-12">
+    <form role="form" method="POST">
+        <ul class="list-unstyled list-inline">
+          <li><h4>Delete this post?</h4></li>
+          <li><button type="submit" class="btn btn-danger" name="submit" value="delete">Delete</button></li>
+          <li><button type="submit" class="btn btn-default" name="submit" value="cancel">Cancel</button></li>       
+        </ul>
+    </form>
   </div>
 </div>
-<div class="row">
-  <div class="col-md-4"></div>
-  <div class="col-md-4 text-center">
-    <h2>Delete this post?</h2>
-  </div>
-  <div class="col-md-4"></div>
-</div>
-<div class="row">
-  <div class="col-md-4"></div>
-  <form role="form" method="POST">
-    <div class="col-md-4 text-center">
-      <button type="submit" class="btn btn-default" name="submit" value="cancel">Cancel</button>
-      <button type="submit" class="btn btn-default" name="submit" value="delete">Delete</button>
-    </div>
-  </form>
-  <div class="col-md-4"></div>
-</div>
+
+{{ macros.render_post(post) }}
 
 {% endblock %}
