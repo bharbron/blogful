@@ -116,5 +116,20 @@ class TestViews(unittest.TestCase):
     self.browser.visit("http://0.0.0.0:8080/post/1/delete")
     self.assertEqual(self.browser.url, "http://0.0.0.0:8080/")
     
+  def testAddPost(self):
+    self.browser.visit("http://0.0.0.0:8080/login")
+    self.browser.fill("email", "alice@example.com")
+    self.browser.fill("password", "test")
+    button = self.browser.find_by_css("button[type=submit]")
+    button.click()
+    self.browser.visit("http://0.0.0.0:8080/post/add")
+    self.browser.fill("title", "new title")
+    self.browser.fill("content", "new content")
+    button = self.browser.find_by_css("button[type=submit]")
+    button.click()
+    self.assertEqual(self.browser.url, "http://0.0.0.0:8080/")
+    self.assertTrue(self.browser.is_text_present("new title"))
+    self.assertTrue(self.browser.is_text_present("new content"))
+    
 if __name__ == "__main__":
   unittest.main()
