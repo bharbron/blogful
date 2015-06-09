@@ -52,28 +52,24 @@ class TestViews(unittest.TestCase):
     Base.metadata.drop_all(engine)
     self.browser.quit()
     
-  def testLoginCorrect(self):
+  def login(self, email, password):
+    """ Log into the blog """
     self.browser.visit("http://0.0.0.0:8080/login")
-    self.browser.fill("email", "alice@example.com")
-    self.browser.fill("password", "test")
+    self.browser.fill("email", email)
+    self.browser.fill("password", password)
     button = self.browser.find_by_css("button[type=submit]")
     button.click()
+    
+  def testLoginCorrect(self):
+    self.login(email="alice@example.com", password="test")
     self.assertEqual(self.browser.url, "http://0.0.0.0:8080/")
     
   def testLoginIncorrect(self):
-    self.browser.visit("http://0.0.0.0:8080/login")
-    self.browser.fill("email", "bob@example.com")
-    self.browser.fill("password", "test")
-    button = self.browser.find_by_css("button[type=submit]")
-    button.click()
+    self.login(email="bob@example.com", password="test")
     self.assertEqual(self.browser.url, "http://0.0.0.0:8080/login")
     
   def testEditAsAuthor(self):
-    self.browser.visit("http://0.0.0.0:8080/login")
-    self.browser.fill("email", "alice@example.com")
-    self.browser.fill("password", "test")
-    button = self.browser.find_by_css("button[type=submit]")
-    button.click()
+    self.login(email="alice@example.com", password="test")
     self.browser.visit("http://0.0.0.0:8080/post/2/edit")
     self.assertEqual(self.browser.url, "http://0.0.0.0:8080/post/2/edit")
     self.browser.fill("title", "edited title")
@@ -85,20 +81,12 @@ class TestViews(unittest.TestCase):
     self.assertTrue(self.browser.is_text_present("edited content"))
   
   def testEditNotAsAuthor(self):
-    self.browser.visit("http://0.0.0.0:8080/login")
-    self.browser.fill("email", "carlos@example.com")
-    self.browser.fill("password", "test")
-    button = self.browser.find_by_css("button[type=submit]")
-    button.click()
+    self.login(email="carlos@example.com", password="test")
     self.browser.visit("http://0.0.0.0:8080/post/1/edit")
     self.assertEqual(self.browser.url, "http://0.0.0.0:8080/")
   
   def testDeleteAsAuthor(self):
-    self.browser.visit("http://0.0.0.0:8080/login")
-    self.browser.fill("email", "alice@example.com")
-    self.browser.fill("password", "test")
-    button = self.browser.find_by_css("button[type=submit]")
-    button.click()
+    self.login(email="alice@example.com", password="test")
     self.browser.visit("http://0.0.0.0:8080/post/3/delete")
     self.assertEqual(self.browser.url, "http://0.0.0.0:8080/post/3/delete")
     self.assertTrue(self.browser.is_text_present("Acceptance test post #3"))
@@ -108,20 +96,12 @@ class TestViews(unittest.TestCase):
     self.assertFalse(self.browser.is_text_present("Acceptance test post #3"))
   
   def testDeleteNotAsAuthor(self):
-    self.browser.visit("http://0.0.0.0:8080/login")
-    self.browser.fill("email", "carlos@example.com")
-    self.browser.fill("password", "test")
-    button = self.browser.find_by_css("button[type=submit]")
-    button.click()
+    self.login(email="carlos@example.com", password="test")
     self.browser.visit("http://0.0.0.0:8080/post/1/delete")
     self.assertEqual(self.browser.url, "http://0.0.0.0:8080/")
     
   def testAddPost(self):
-    self.browser.visit("http://0.0.0.0:8080/login")
-    self.browser.fill("email", "alice@example.com")
-    self.browser.fill("password", "test")
-    button = self.browser.find_by_css("button[type=submit]")
-    button.click()
+    self.login(email="alice@example.com", password="test")
     self.browser.visit("http://0.0.0.0:8080/post/add")
     self.browser.fill("title", "new title")
     self.browser.fill("content", "new content")
