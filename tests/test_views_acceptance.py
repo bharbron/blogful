@@ -99,8 +99,13 @@ class TestViews(unittest.TestCase):
     self.browser.fill("password", "test")
     button = self.browser.find_by_css("button[type=submit]")
     button.click()
-    self.browser.visit("http://0.0.0.0:8080/post/1/delete")
-    self.assertEqual(self.browser.url, "http://0.0.0.0:8080/post/1/delete")
+    self.browser.visit("http://0.0.0.0:8080/post/3/delete")
+    self.assertEqual(self.browser.url, "http://0.0.0.0:8080/post/3/delete")
+    self.assertTrue(self.browser.is_text_present("Acceptance test post #3"))
+    button = self.browser.find_by_css("button[value=delete]")
+    button.click()
+    self.assertEqual(self.browser.url, "http://0.0.0.0:8080/")
+    self.assertFalse(self.browser.is_text_present("Acceptance test post #3"))
   
   def testDeleteNotAsAuthor(self):
     self.browser.visit("http://0.0.0.0:8080/login")
